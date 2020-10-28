@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_paint/data/path_histories.dart';
-import 'package:flutter_paint/utility/common.dart';
+
+import '../../data/path_histories.dart';
 
 class DrawingPainter extends CustomPainter {
   final PathHistories _histories;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:provider/provider.dart';
+
+import '../../utility/event.dart';
 
 class ColorPickerAlert {
   Color _currentColor = Colors.red;
@@ -10,12 +13,10 @@ class ColorPickerAlert {
     _currentColor = color;
   }
 
-  Function onSuccess;
-
-  show(BuildContext context) {
+  void show(BuildContext context, String type) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           content: SingleChildScrollView(
             child: ColorPicker(
@@ -28,8 +29,11 @@ class ColorPickerAlert {
             FlatButton(
               child: const Text('OK'),
               onPressed: () {
-                if (onSuccess != null) {
-                  onSuccess();
+                final appStateEvent = context.read<AppStateEvent>();
+                if (type == "change_color") {
+                  appStateEvent.send(ChangeColorEvent(_currentColor));
+                } else {
+                  appStateEvent.send(FillEvent(_currentColor));
                 }
                 Navigator.of(context).pop();
               },

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_paint/ui/widget/dialog_color_picker.dart';
-import 'package:flutter_paint/utility/event.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../utility/event.dart';
+import 'dialog_color_picker.dart';
 
 class MenuWidget extends StatefulWidget {
   MenuWidget({Key key, this.title}) : super(key: key);
@@ -19,19 +21,11 @@ class _MenuWidgetState extends State<MenuWidget> {
   @override
   void initState() {
     super.initState();
-
-    colorAlert.onSuccess = () {
-      setState(() {});
-      eventBus.fire(ChangeColorEvent(colorAlert.currentColor));
-    };
-
-    fillAlert.onSuccess = () {
-      eventBus.fire(FillEvent(fillAlert.currentColor));
-    };
   }
 
   @override
   Widget build(BuildContext context) {
+    final appStateEvent = context.watch<AppStateEvent>();
     return Card(
       color: Colors.white,
       child: Column(
@@ -39,83 +33,83 @@ class _MenuWidgetState extends State<MenuWidget> {
         children: <Widget>[
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.trashAlt,
             ),
             onPressed: () {
-              eventBus.fire(ClearBoardEvent());
+              appStateEvent.send(ClearBoardEvent());
             },
           ),
           IconButton(
             color: colorAlert.currentColor,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.palette,
             ),
             onPressed: () {
-              colorAlert.show(context);
+              colorAlert.show(context, "change_color");
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.fill,
             ),
             onPressed: () {
-              fillAlert.show(context);
+              fillAlert.show(context, "fill_color");
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.exchangeAlt,
             ),
             onPressed: () {
-              eventBus.fire(ChangeDrawModeEvent());
+              appStateEvent.send(ChangeDrawModeEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.fileExport,
             ),
             onPressed: () {
-              eventBus.fire(ExportImageEvent());
+              appStateEvent.send(ExportImageEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.undo,
             ),
             onPressed: () {
-              eventBus.fire(UndoEvent());
+              appStateEvent.send(UndoEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.redo,
             ),
             onPressed: () {
-              eventBus.fire(RedoEvent());
+              appStateEvent.send(RedoEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.image,
             ),
             onPressed: () {
-              eventBus.fire(ChangeBackgroundEvent());
+              appStateEvent.send(ChangeBackgroundEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.shareAlt,
             ),
             onPressed: () {
-              eventBus.fire(ShareEvent());
+              appStateEvent.send(ShareEvent());
             },
           ),
         ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_paint/const.dart';
-import 'package:flutter_paint/ui/screen/main_screen.dart';
+import 'const.dart';
+import 'ui/screen/main_screen.dart';
 
 class App extends StatelessWidget {
   @override

@@ -11,7 +11,7 @@ import 'package:toast/toast.dart';
 takeScreenShot(GlobalKey key) async {
   final permission =
       Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
-  Map<PermissionGroup, PermissionStatus> permissions =
+  var permissions =
       await PermissionHandler().requestPermissions([permission]);
   if (PermissionStatus.disabled == permissions[permission]) {
     final isOpened = await PermissionHandler().openAppSettings();
@@ -23,12 +23,12 @@ takeScreenShot(GlobalKey key) async {
   RenderRepaintBoundary boundary = key.currentContext.findRenderObject();
   final image = await boundary.toImage();
   final byteData = await image.toByteData(format: ImageByteFormat.png);
-  Uint8List pngBytes = byteData.buffer.asUint8List();
+  var pngBytes = byteData.buffer.asUint8List();
 
   final result = await ImageGallerySaver.save(pngBytes);
 
   Toast.show(
-    "Save image success to gallery",
+    'Save image success to gallery',
     key.currentContext,
     duration: Toast.LENGTH_LONG,
     gravity: Toast.BOTTOM,
