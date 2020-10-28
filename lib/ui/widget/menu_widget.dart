@@ -25,7 +25,6 @@ class _MenuWidgetState extends State<MenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final appStateEvent = context.watch<AppStateEvent>();
     return Card(
       color: Colors.white,
       child: Column(
@@ -37,7 +36,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.trashAlt,
             ),
             onPressed: () {
-              appStateEvent.send(ClearBoardEvent());
+              context.read<AppStateEvent>().send(ClearBoardEvent());
             },
           ),
           IconButton(
@@ -64,7 +63,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.exchangeAlt,
             ),
             onPressed: () {
-              appStateEvent.send(ChangeDrawModeEvent());
+              context.read<AppStateEvent>().send(ChangeDrawModeEvent());
             },
           ),
           IconButton(
@@ -73,7 +72,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.fileExport,
             ),
             onPressed: () {
-              appStateEvent.send(ExportImageEvent());
+              context.read<AppStateEvent>().send(ExportImageEvent());
             },
           ),
           IconButton(
@@ -82,7 +81,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.undo,
             ),
             onPressed: () {
-              appStateEvent.send(UndoEvent());
+              context.read<AppStateEvent>().send(UndoEvent());
             },
           ),
           IconButton(
@@ -91,7 +90,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.redo,
             ),
             onPressed: () {
-              appStateEvent.send(RedoEvent());
+              context.read<AppStateEvent>().send(RedoEvent());
             },
           ),
           IconButton(
@@ -100,7 +99,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.image,
             ),
             onPressed: () {
-              appStateEvent.send(ChangeBackgroundEvent());
+              context.read<AppStateEvent>().send(ChangeBackgroundEvent());
             },
           ),
           IconButton(
@@ -109,7 +108,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               FontAwesomeIcons.shareAlt,
             ),
             onPressed: () {
-              appStateEvent.send(ShareEvent());
+              context.read<AppStateEvent>().send(ShareEvent());
             },
           ),
         ],
