@@ -19,11 +19,6 @@ class _MenuWidgetState extends State<MenuWidget> {
   final fillAlert = ColorPickerAlert();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
@@ -44,8 +39,9 @@ class _MenuWidgetState extends State<MenuWidget> {
             icon: Icon(
               FontAwesomeIcons.palette,
             ),
-            onPressed: () {
-              colorAlert.show(context, "change_color");
+            onPressed: () async {
+              final color = await colorAlert.show(context);
+              context.read<AppStateEvent>().send(ChangeColorEvent(color));
             },
           ),
           IconButton(
@@ -53,8 +49,9 @@ class _MenuWidgetState extends State<MenuWidget> {
             icon: Icon(
               FontAwesomeIcons.fill,
             ),
-            onPressed: () {
-              fillAlert.show(context, "fill_color");
+            onPressed: () async {
+              final color = await fillAlert.show(context);
+              context.read<AppStateEvent>().send(FillEvent(color));
             },
           ),
           IconButton(
