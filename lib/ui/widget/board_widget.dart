@@ -82,25 +82,25 @@ class _BoardWdigetState extends State<BoardWdiget> {
   }
 
   void _onPanStart(DragStartDetails details) {
-    setState(() {
-      final renderBox = context.findRenderObject() as RenderBox;
-      final point = renderBox.globalToLocal(details.globalPosition);
+    final renderBox = context.findRenderObject() as RenderBox;
+    final point = renderBox.globalToLocal(details.globalPosition);
 
-      _histories.startSession(_createPaint(), _pointMode);
-      _histories.addPoint(point);
-    });
+    _histories.startSession(_createPaint(), _pointMode);
+    _histories.addPoint(point);
+
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    setState(() {
-      final renderBox = context.findRenderObject() as RenderBox;
-      final point = renderBox.globalToLocal(details.globalPosition);
-      _histories.addPoint(point);
-    });
+    final renderBox = context.findRenderObject() as RenderBox;
+    final point = renderBox.globalToLocal(details.globalPosition);
+    _histories.addPoint(point);
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
   void _onPanEnd(DragEndDetails details) {
-    setState(_histories.finishSession);
+    _histories.finishSession();
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
   Paint _createPaint() {
@@ -179,9 +179,7 @@ class _BoardWdigetState extends State<BoardWdiget> {
       return;
     }
 
-    setState(() {
-      _backgroundImage = FileImage(image);
-    });
+    _backgroundImage = FileImage(image);
   }
 
   void _share() {

@@ -24,6 +24,8 @@ class ShareEvent implements AppEvent {}
 
 class ChangeBackgroundEvent implements AppEvent {}
 
+class RepaintEvent implements AppEvent {}
+
 class FillEvent implements AppEvent {
   final Color color;
 
