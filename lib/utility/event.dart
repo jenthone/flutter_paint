@@ -34,7 +34,7 @@ class AppStateEvent extends ChangeNotifier {
   AppEvent _event;
   AppEvent get event => _event;
 
-  send(AppEvent event) {
+  void send(AppEvent event) {
     _event = event;
     notifyListeners();
   }

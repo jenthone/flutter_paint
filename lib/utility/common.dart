@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/rendering.dart';
@@ -8,11 +7,10 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toast/toast.dart';
 
-takeScreenShot(GlobalKey key) async {
+void takeScreenShot(GlobalKey key) async {
   final permission =
       Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
-  var permissions =
-      await PermissionHandler().requestPermissions([permission]);
+  var permissions = await PermissionHandler().requestPermissions([permission]);
   if (PermissionStatus.disabled == permissions[permission]) {
     final isOpened = await PermissionHandler().openAppSettings();
     return;

@@ -1,0 +1,9 @@
+{
+    "scripts": {
+        "setup": "npm run clean && npm run pub-get",
+        "clean": "flutter clean",
+        "pub-get": "flutter pub get",
+        "analyze": "flutter analyze lib || true",
+        "dart-fix-quietly": "flutter pub global activate dartfix && flutter pub global run dartfix --pedantic lib --overwrite"
+    }
+}
