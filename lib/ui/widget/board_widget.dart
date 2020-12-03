@@ -17,7 +17,6 @@ class BoardWdiget extends StatefulWidget {
 }
 
 class _BoardWdigetState extends State<BoardWdiget> {
-  double _strokeWidth = 3.0;
   Color _color = Colors.red;
   bool _isEraserMode = false;
   PointMode _pointMode = PointMode.polygon;
@@ -111,7 +110,7 @@ class _BoardWdigetState extends State<BoardWdiget> {
       ..isAntiAlias = true
       ..blendMode = blendMode
       ..color = color
-      ..strokeWidth = _strokeWidth;
+      ..strokeWidth = 3.0;
   }
 
   ImageProvider _getBackgroundImage() {
@@ -132,10 +131,6 @@ class _BoardWdigetState extends State<BoardWdiget> {
   }
 
   void _changeColor(Color color) => _color = color.withOpacity(_color.opacity);
-
-  void _changeStrokeWidth(double strokeWidth) => _strokeWidth = strokeWidth;
-
-  void _changeOpacity(double opacity) => _color = _color.withOpacity(opacity);
 
   void _undo() {
     _histories.undo();

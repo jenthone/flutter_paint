@@ -16,13 +16,13 @@ class DrawingPainter extends CustomPainter {
       Rect.fromLTWH(0.0, 0.0, size.width, size.height),
       _histories.backgroundPaint,
     );
-    _histories.paths.forEach((history) {
+    for (final path in _histories.paths) {
       canvas.drawPoints(
-        history.pointMode,
-        history.offsets,
-        history.paint,
+        path.pointMode,
+        path.offsets,
+        path.paint,
       );
-    });
+    }
   }
 
   @override

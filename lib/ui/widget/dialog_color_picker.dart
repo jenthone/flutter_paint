@@ -6,10 +6,6 @@ class ColorPickerAlert {
 
   Color get currentColor => _currentColor;
 
-  _changeColor(Color color) {
-    _currentColor = color;
-  }
-
   Future<Color> show(BuildContext context) {
     return showDialog(
       context: context,
@@ -18,7 +14,9 @@ class ColorPickerAlert {
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: _currentColor,
-              onColorChanged: _changeColor,
+              onColorChanged: (value) {
+                _currentColor = value;
+              },
               pickerAreaHeightPercent: 0.8,
             ),
           ),

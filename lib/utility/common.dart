@@ -12,7 +12,7 @@ void takeScreenShot(GlobalKey key) async {
       Platform.isAndroid ? PermissionGroup.storage : PermissionGroup.photos;
   var permissions = await PermissionHandler().requestPermissions([permission]);
   if (PermissionStatus.disabled == permissions[permission]) {
-    final isOpened = await PermissionHandler().openAppSettings();
+    await PermissionHandler().openAppSettings();
     return;
   }
   if (PermissionStatus.granted != permissions[permission]) {
@@ -23,7 +23,7 @@ void takeScreenShot(GlobalKey key) async {
   final byteData = await image.toByteData(format: ImageByteFormat.png);
   var pngBytes = byteData.buffer.asUint8List();
 
-  final result = await ImageGallerySaver.save(pngBytes);
+  await ImageGallerySaver.save(pngBytes);
 
   Toast.show(
     'Save image success to gallery',

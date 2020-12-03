@@ -10,32 +10,32 @@ class PathHistory {
 }
 
 class PathHistories {
-  final _paths = <PathHistory>[];
+  final _pathHistories = <PathHistory>[];
 
   final _backupPaths = <PathHistory>[];
 
   final _backgroundPaint = Paint()..color = Colors.transparent;
 
-  List<PathHistory> get paths => _paths;
+  List<PathHistory> get paths => _pathHistories;
 
   Paint get backgroundPaint => _backgroundPaint;
 
   void startSession(Paint paint, PointMode pointMode) {
-    _paths.add(PathHistory(paint: paint, pointMode: pointMode));
+    _pathHistories.add(PathHistory(paint: paint, pointMode: pointMode));
 
     _backupPaths.clear();
   }
 
-  void addPoint(Offset point) => _paths.last.offsets.add(point);
+  void addPoint(Offset point) => _pathHistories.last.offsets.add(point);
 
   void finishSession() {
-    if (_paths.last.offsets.length == 1) {
-      _paths.last.offsets.add(_paths.last.offsets.first);
+    if (_pathHistories.last.offsets.length == 1) {
+      _pathHistories.last.offsets.add(_pathHistories.last.offsets.first);
     }
   }
 
   void clear() {
-    _paths.clear();
+    _pathHistories.clear();
   }
 
   void undo() {
@@ -53,8 +53,9 @@ class PathHistories {
     }
 
     final last = _backupPaths.removeLast();
-    _paths.add(last);
+    _pathHistories.add(last);
   }
 
+  // ignore: use_setters_to_change_properties
   void changeBackgroundColor(Color color) => _backgroundPaint.color = color;
 }
