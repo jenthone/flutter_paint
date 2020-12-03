@@ -1,0 +1,25 @@
+name: Flutter
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: cirrusci/flutter:stable
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: clean
+        run: flutter clean
+      - name: get pub
+        run: flutter pub get
+      - name: analyzer
+        run: dartanalyzer --options analysis_options.yaml .
+      - name: build android
+        run: flutter build apk --debug
