@@ -1,7 +1,4 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-
-EventBus eventBus = EventBus();
 
 abstract class AppEvent {}
 
@@ -27,8 +24,20 @@ class ShareEvent implements AppEvent {}
 
 class ChangeBackgroundEvent implements AppEvent {}
 
+class RepaintEvent implements AppEvent {}
+
 class FillEvent implements AppEvent {
   final Color color;
 
   FillEvent(this.color);
+}
+
+class AppStateEvent extends ChangeNotifier {
+  AppEvent _event;
+  AppEvent get event => _event;
+
+  void send(AppEvent event) {
+    _event = event;
+    notifyListeners();
+  }
 }

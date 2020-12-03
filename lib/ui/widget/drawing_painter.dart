@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_paint/data/path_histories.dart';
-import 'package:flutter_paint/utility/common.dart';
+
+import '../../data/path_histories.dart';
 
 class DrawingPainter extends CustomPainter {
   final PathHistories _histories;
@@ -16,13 +16,13 @@ class DrawingPainter extends CustomPainter {
       Rect.fromLTWH(0.0, 0.0, size.width, size.height),
       _histories.backgroundPaint,
     );
-    _histories.paths.forEach((history) {
+    for (final path in _histories.paths) {
       canvas.drawPoints(
-        history.pointMode,
-        history.offsets,
-        history.paint,
+        path.pointMode,
+        path.offsets,
+        path.paint,
       );
-    });
+    }
   }
 
   @override

@@ -12,7 +12,6 @@ dependencies:
 
   cupertino_icons: ^0.1.3
   font_awesome_flutter: ^8.5.0
-  event_bus: ^1.1.0
   flutter_colorpicker: ^0.2.5
   path_provider: ^1.2.0
   toast: ^0.1.5
@@ -20,10 +19,12 @@ dependencies:
   share: ^0.6.2
   image_gallery_saver: ^1.1.0
   permission_handler: ^3.2.0
+  provider: ^4.3.2+2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  effective_dart: ^1.0.0
 
 flutter:
   uses-material-design: true

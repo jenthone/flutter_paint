@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_paint/ui/widget/dialog_color_picker.dart';
-import 'package:flutter_paint/utility/event.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../utility/event.dart';
+import 'dialog_color_picker.dart';
 
 class MenuWidget extends StatefulWidget {
   MenuWidget({Key key, this.title}) : super(key: key);
@@ -17,20 +19,6 @@ class _MenuWidgetState extends State<MenuWidget> {
   final fillAlert = ColorPickerAlert();
 
   @override
-  void initState() {
-    super.initState();
-
-    colorAlert.onSuccess = () {
-      setState(() {});
-      eventBus.fire(ChangeColorEvent(colorAlert.currentColor));
-    };
-
-    fillAlert.onSuccess = () {
-      eventBus.fire(FillEvent(fillAlert.currentColor));
-    };
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
@@ -39,83 +27,85 @@ class _MenuWidgetState extends State<MenuWidget> {
         children: <Widget>[
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.trashAlt,
             ),
             onPressed: () {
-              eventBus.fire(ClearBoardEvent());
+              context.read<AppStateEvent>().send(ClearBoardEvent());
             },
           ),
           IconButton(
             color: colorAlert.currentColor,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.palette,
             ),
-            onPressed: () {
-              colorAlert.show(context);
+            onPressed: () async {
+              final color = await colorAlert.show(context);
+              context.read<AppStateEvent>().send(ChangeColorEvent(color));
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.fill,
             ),
-            onPressed: () {
-              fillAlert.show(context);
+            onPressed: () async {
+              final color = await fillAlert.show(context);
+              context.read<AppStateEvent>().send(FillEvent(color));
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.exchangeAlt,
             ),
             onPressed: () {
-              eventBus.fire(ChangeDrawModeEvent());
+              context.read<AppStateEvent>().send(ChangeDrawModeEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.fileExport,
             ),
             onPressed: () {
-              eventBus.fire(ExportImageEvent());
+              context.read<AppStateEvent>().send(ExportImageEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.undo,
             ),
             onPressed: () {
-              eventBus.fire(UndoEvent());
+              context.read<AppStateEvent>().send(UndoEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.redo,
             ),
             onPressed: () {
-              eventBus.fire(RedoEvent());
+              context.read<AppStateEvent>().send(RedoEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.image,
             ),
             onPressed: () {
-              eventBus.fire(ChangeBackgroundEvent());
+              context.read<AppStateEvent>().send(ChangeBackgroundEvent());
             },
           ),
           IconButton(
             color: Colors.pink,
-            icon: new Icon(
+            icon: Icon(
               FontAwesomeIcons.shareAlt,
             ),
             onPressed: () {
-              eventBus.fire(ShareEvent());
+              context.read<AppStateEvent>().send(ShareEvent());
             },
           ),
         ],

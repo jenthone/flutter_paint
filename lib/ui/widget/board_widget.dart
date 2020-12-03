@@ -2,21 +2,21 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_paint/data/path_histories.dart';
-import 'package:flutter_paint/ui/widget/drawing_painter.dart';
-import 'package:flutter_paint/utility/bus_state.dart';
-import 'package:flutter_paint/utility/common.dart';
-import 'package:flutter_paint/utility/event.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+
+import '../../data/path_histories.dart';
+import '../../utility/common.dart';
+import '../../utility/event.dart';
+import 'drawing_painter.dart';
 
 class BoardWdiget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _BoardWdigetState();
 }
 
-class _BoardWdigetState extends BusState<BoardWdiget> {
-  double _strokeWidth = 3.0;
+class _BoardWdigetState extends State<BoardWdiget> {
   Color _color = Colors.red;
   bool _isEraserMode = false;
   PointMode _pointMode = PointMode.polygon;
@@ -24,13 +24,6 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
 
   final _histories = PathHistories();
   final _boardGlobalKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _setupEvent();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,65 +40,66 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
           onPanUpdate: _onPanUpdate,
           onPanStart: _onPanStart,
           onPanEnd: _onPanEnd,
-          child: ClipRect(
-            child: CustomPaint(
-              size: Size.infinite,
-              painter: DrawingPainter(histories: _histories),
-            ),
+          child: Consumer<AppStateEvent>(
+            builder: (context, value, child) {
+              _setupEvent(value.event);
+              return ClipRect(
+                child: CustomPaint(
+                  size: Size.infinite,
+                  painter: DrawingPainter(histories: _histories),
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  _setupEvent() {
-    eventBusSubscription = eventBus.on<AppEvent>().listen((event) {
-      if (event is ClearBoardEvent) {
-        _clear();
-      } else if (event is ChangeColorEvent) {
-        _changeColor(event.color);
-      } else if (event is ExportImageEvent) {
-        _takeScreenshot();
-      } else if (event is UndoEvent) {
-        _undo();
-      } else if (event is RedoEvent) {
-        _redo();
-      } else if (event is ChangeDrawModeEvent) {
-        _changeDrawingMode();
-      } else if (event is EraserEvent) {
-        _toggleBlendMode();
-      } else if (event is ShareEvent) {
-        _share();
-      } else if (event is ChangeBackgroundEvent) {
-        _pickImage();
-      } else if (event is FillEvent) {
-        _changeBackgroundColor(event.color);
-      }
-    });
+  void _setupEvent(AppEvent event) {
+    if (event is ClearBoardEvent) {
+      _clear();
+    } else if (event is ChangeColorEvent) {
+      _changeColor(event.color);
+    } else if (event is ExportImageEvent) {
+      _takeScreenshot();
+    } else if (event is UndoEvent) {
+      _undo();
+    } else if (event is RedoEvent) {
+      _redo();
+    } else if (event is ChangeDrawModeEvent) {
+      _changeDrawingMode();
+    } else if (event is EraserEvent) {
+      _toggleBlendMode();
+    } else if (event is ShareEvent) {
+      _share();
+    } else if (event is ChangeBackgroundEvent) {
+      _pickImage();
+    } else if (event is FillEvent) {
+      _changeBackgroundColor(event.color);
+    }
   }
 
-  _onPanStart(DragStartDetails details) {
-    setState(() {
-      final renderBox = context.findRenderObject() as RenderBox;
-      final point = renderBox.globalToLocal(details.globalPosition);
+  void _onPanStart(DragStartDetails details) {
+    final renderBox = context.findRenderObject() as RenderBox;
+    final point = renderBox.globalToLocal(details.globalPosition);
 
-      _histories.startSession(_createPaint(), _pointMode);
-      _histories.addPoint(point);
-    });
+    _histories.startSession(_createPaint(), _pointMode);
+    _histories.addPoint(point);
+
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
-  _onPanUpdate(DragUpdateDetails details) {
-    setState(() {
-      final renderBox = context.findRenderObject() as RenderBox;
-      final point = renderBox.globalToLocal(details.globalPosition);
-      _histories.addPoint(point);
-    });
+  void _onPanUpdate(DragUpdateDetails details) {
+    final renderBox = context.findRenderObject() as RenderBox;
+    final point = renderBox.globalToLocal(details.globalPosition);
+    _histories.addPoint(point);
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
-  _onPanEnd(DragEndDetails details) {
-    setState(() {
-      _histories.finishSession();
-    });
+  void _onPanEnd(DragEndDetails details) {
+    _histories.finishSession();
+    context.read<AppStateEvent>().send(RepaintEvent());
   }
 
   Paint _createPaint() {
@@ -116,7 +110,7 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
       ..isAntiAlias = true
       ..blendMode = blendMode
       ..color = color
-      ..strokeWidth = _strokeWidth;
+      ..strokeWidth = 3.0;
   }
 
   ImageProvider _getBackgroundImage() {
@@ -128,59 +122,35 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
     );
   }
 
-  _clear() {
-    setState(() {
-      _backgroundImage = null;
-      if (_histories.paths.isEmpty) {
-        return;
-      }
-      _histories.clear();
-    });
+  void _clear() {
+    _backgroundImage = null;
+    if (_histories.paths.isEmpty) {
+      return;
+    }
+    _histories.clear();
   }
 
-  _changeColor(Color color) {
-    setState(() {
-      _color = color.withOpacity(_color.opacity);
-    });
+  void _changeColor(Color color) => _color = color.withOpacity(_color.opacity);
+
+  void _undo() {
+    _histories.undo();
   }
 
-  _changeStrokeWidth(double strokeWidth) {
-    setState(() {
-      _strokeWidth = strokeWidth;
-    });
+  void _redo() {
+    _histories.redo();
   }
 
-  _changeOpacity(double opacity) {
-    setState(() {
-      _color = _color.withOpacity(opacity);
-    });
+  void _changeDrawingMode() {
+    if (_pointMode == PointMode.polygon) {
+      _pointMode = PointMode.lines;
+    } else if (_pointMode == PointMode.lines) {
+      _pointMode = PointMode.points;
+    } else {
+      _pointMode = PointMode.polygon;
+    }
   }
 
-  _undo() {
-    setState(() {
-      _histories.undo();
-    });
-  }
-
-  _redo() {
-    setState(() {
-      _histories.redo();
-    });
-  }
-
-  _changeDrawingMode() {
-    setState(() {
-      if (_pointMode == PointMode.polygon) {
-        _pointMode = PointMode.lines;
-      } else if (_pointMode == PointMode.lines) {
-        _pointMode = PointMode.points;
-      } else {
-        _pointMode = PointMode.polygon;
-      }
-    });
-  }
-
-  _takeScreenshot() {
+  void _takeScreenshot() {
     if (_histories.paths.isEmpty) {
       return;
     }
@@ -188,14 +158,12 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
     takeScreenShot(_boardGlobalKey);
   }
 
-  _changeBackgroundColor(Color color) {
-    setState(() {
-      _histories.changeBackgroundColor(color);
-    });
+  void _changeBackgroundColor(Color color) {
+    _histories.changeBackgroundColor(color);
   }
 
   // I don't know why clear mode not working
-  _toggleBlendMode() {
+  void _toggleBlendMode() {
     _isEraserMode = !_isEraserMode;
   }
 
@@ -206,12 +174,10 @@ class _BoardWdigetState extends BusState<BoardWdiget> {
       return;
     }
 
-    setState(() {
-      _backgroundImage = FileImage(image);
-    });
+    _backgroundImage = FileImage(image);
   }
 
-  _share() {
+  void _share() {
     Share.share('Flutter Paint');
   }
 }

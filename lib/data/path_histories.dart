@@ -4,43 +4,41 @@ import 'package:flutter/material.dart';
 
 class PathHistory {
   final Paint paint;
-  final offsets = List<Offset>();
+  final offsets = <Offset>[];
   final PointMode pointMode;
   PathHistory({this.paint, this.pointMode});
 }
 
 class PathHistories {
-  final _paths = List<PathHistory>();
+  final _pathHistories = <PathHistory>[];
 
-  final _backupPaths = List<PathHistory>();
+  final _backupPaths = <PathHistory>[];
 
   final _backgroundPaint = Paint()..color = Colors.transparent;
 
-  List<PathHistory> get paths => _paths;
+  List<PathHistory> get paths => _pathHistories;
 
   Paint get backgroundPaint => _backgroundPaint;
 
-  startSession(Paint paint, PointMode pointMode) {
-    _paths.add(PathHistory(paint: paint, pointMode: pointMode));
+  void startSession(Paint paint, PointMode pointMode) {
+    _pathHistories.add(PathHistory(paint: paint, pointMode: pointMode));
 
     _backupPaths.clear();
   }
 
-  addPoint(Offset point) {
-    _paths.last.offsets.add(point);
-  }
+  void addPoint(Offset point) => _pathHistories.last.offsets.add(point);
 
-  finishSession() {
-    if (_paths.last.offsets.length == 1) {
-      _paths.last.offsets.add(_paths.last.offsets.first);
+  void finishSession() {
+    if (_pathHistories.last.offsets.length == 1) {
+      _pathHistories.last.offsets.add(_pathHistories.last.offsets.first);
     }
   }
 
-  clear() {
-    _paths.clear();
+  void clear() {
+    _pathHistories.clear();
   }
 
-  undo() {
+  void undo() {
     if (paths.isEmpty) {
       return;
     }
@@ -49,16 +47,15 @@ class PathHistories {
     _backupPaths.add(last);
   }
 
-  redo() {
+  void redo() {
     if (_backupPaths.isEmpty) {
       return;
     }
 
     final last = _backupPaths.removeLast();
-    _paths.add(last);
+    _pathHistories.add(last);
   }
 
-  changeBackgroundColor(Color color) {
-    _backgroundPaint.color = color;
-  }
+  // ignore: use_setters_to_change_properties
+  void changeBackgroundColor(Color color) => _backgroundPaint.color = color;
 }

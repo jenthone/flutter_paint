@@ -6,21 +6,17 @@ class ColorPickerAlert {
 
   Color get currentColor => _currentColor;
 
-  _changeColor(Color color) {
-    _currentColor = color;
-  }
-
-  Function onSuccess;
-
-  show(BuildContext context) {
-    showDialog(
+  Future<Color> show(BuildContext context) {
+    return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: _currentColor,
-              onColorChanged: _changeColor,
+              onColorChanged: (value) {
+                _currentColor = value;
+              },
               pickerAreaHeightPercent: 0.8,
             ),
           ),
@@ -28,10 +24,7 @@ class ColorPickerAlert {
             FlatButton(
               child: const Text('OK'),
               onPressed: () {
-                if (onSuccess != null) {
-                  onSuccess();
-                }
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(_currentColor);
               },
             ),
           ],
